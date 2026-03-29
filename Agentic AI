@@ -1,0 +1,359 @@
+
+Agentic AI (Andrew Ng)
+
+Module1:
+
+What is Agentic AI
+An Agentic AI workflow is a Process  where LLM Based App Execute Many Steps to complete the task
+Example : write a essay on dinasaurs 
+Direct Flow -> LLM -> response
+Agentic Flow 	-> LLM go research
+		-> LLM draft intial essay (draft)
+		-> LLM judge/Refractor that, and suggest changes (more tha one time) 
+		-> LLM Send to human Review
+
+Degree of Autonomy
+Less Autonomous : Flow is Defined, All Step Predifined, All tool use use hard coded, Autonomy is in text generation.
+semi autonomous: Agent can make some decision and choose tools, tools are usually Predifined
+More Autonomous: At each Step LLM decide to take which step, Agent Makes Decision, can create new tool on the fly.
+
+Benifits of Agents:
+1) Earlier Generation Model Surpass new Generation Model in Benchmarks Using Agents [Performance Improvement]
+2) Steps in Work flow can be parallelized, can helps to speed up the tasks [Faster (Parallization)]
+3) Modular: Flexible Component add/swap change configuration of components [Flexible]
+
+Agentic AI Application:
+1) Document parsing/Processing: Invoice Processing 
+2) Customer Support: Responding to Customer email, Flow : Extracting key information, find relevant customers records, Draft Response to Customer
+3) Visual Computer Use: Watch an agent Use a web browser to Complete a Task.
+	
+​Task Decomposition in Agentic Workflow.
+Task : Ganular Step define, classifying Step , like LLm based step or tool or function
+	If After appying these step trying adding new steps or creating more steps, by dividing already presents step into syb steps
+	
+	Buiding blocks : Models- LLMs, Other AI models ( TTS,Pdf_to_text, image Analysis)
+			Tools- API, IR (information Retrieval), Code Execution
+			
+Evaluating  Agentic AI (Evals)
+Can be objective metirc  Like find the count of Token in Response you Don't want in your response  of LLM,
+Example you don't want your Agent mentions some Names or Company names in Respone so you count that occurence when ever it happened. 
+Subjective Evaluation: LLM as Judge to Evaluate output to Score 1 to 5, or any other Ranges
+ 
+End-to-End: Complete Response Quality, Component wise Evaluation
+
+Examine Traces, like what we have done in Rag
+
+Agentic Design Patterns:
+Reflection, Tool Use, Planning, MultiAgent-Colloboration
+1) Reflection : Ask LLM to Examine it own Response or Combining External sources of information like error from output code etc.
+	In Multi Agent System , One Agent Can be Critique and One is code generator
+	
+2) Tool use : Websearch Tool, Code Execution Tool
+
+3) Planning : Prompt be like, generate the image of girl reading book in same pose as this boy in image and describe this image in you voice.
+		Planning
+		Input image : -> pose detection (Pose Determination, openposemodel)
+				pose to image ( pose to image , google/vitmodel)
+				image to text ( image to text , vit-gpt2 model)
+				Text to speech (Text to speech, fast speech )
+				
+4) Multi Agent Workflow: For Accompolish Complex Task Using multiple agents each agent is task specialized
+
+Model2: Reflection Design Pattern (bump in performance, for less bump to high bump)
+1) Reflection to improve the task/Code, by giving to same LLM or Different LLM , for code Reasoning Models Works better
+2) Reflection by External Feedback By executing the code and give that error to code 
+
+3)Reflection Prompting : Clearly Indicate the Reflection Action.
+			Specify Creteria to Check.
+
+4) Evaluating the impact of Reflection:
+Objective Application Like code with exact answer or SQL Query
+Dataset Creation of Prompts and Answer
+
+Dataset = [Prompt: Ground Truth: Without Reflection answer: With Reflection answer]
+Evaluate Above Dataset
+
+Subjective Criteria
+LLM As Judge: Feed Both with or without LLM Response to other LLM and ask for comparison. (Known issues for LLM Comparision Most of time Choose First Option.)
+Rubric-base grading(better): Scoring by LLM is Better Give a Prompt to LLM to Score (0 , 1) if Response Satisfy Certain Criteria,if 10 creteria , can add up to score upto 10.
+	than create dataset
+	[prompt: without Reflection Score: with Reflection Score]
+	
+5) Using External Feedback
+	1)give feed back if found something in Response that you don't want
+	2) Fact check by web search as feed back.
+	3) Code Response and error as Feedback.
+	4) Word count tool used it give word count as feedback.
+
+Module3: Tools Use by LLM 
+1) What are tools
+	(Function provided to LLM so it call it whenever it feels to call)
+	Some Time Developer leaving to LLM to Decide which tool it want to Use, some time it forces/hardcoded the tool.
+2) Creating a tool
+
+Initial Ways of Tool Calling
+provide the tool to LLM : In System Prompt tell the LLM you have this tools if you want to use return exactly in this format -> Function: Function_name
+Now if LLM Response contain "Function" the call the function and append the output in the History of chat then pass the history to LLM the LLM complete the prompt with information
+get by tool.
+
+Modern Syntax of Tool Calling
+Originally LLM Doesn't call the tool its we , We call the tool , LLMS Just tell It will Going for Tool Used.
+
+Message: User(Prompt)-> LLM(Want to Use tool)-> tool (call by system and output going to append)-> LLM(Final Output)
+
+Using aisuite library to add tools in LLM calls so you Don't have to make calls by your self : aisuite
+
+Ugraded Lab1: Tool Calling process Manual , And Using AI Suite
+Ugraded Lab2: Creating Email Management Agent
+
+Code Execution
+Approach1 : Creating Alot of tool
+Approach2: System Query like: "solve user problem using python code, Return your answer as python code delimated with <execute_python> and </execute_python> tags
+	and using python "exec" fuction exec(python_code), if execution fails pass the error output for reflection in LLMS
+	
+Precaution when running these code generrated by AI agents should be Sandbox, Docker indepent environmet sometime they can delte the files
+
+MCP (Model Context Protocol) [Standard Proposed By Anthropic]
+Give LLM Access to More Context and More tools
+Why
+Every Developer don't have to create similar tool for its app, just like calling slack api, github etc, so community set the Standard,
+It decreases work of developer
+
+Intiall it create to fetch data/document from the Different Servers, 
+Now MCP gives Access to Both Data as well as General Functions.
+
+MCP Clients: cursor, claude desktop, windsurf, Are going to use MCP SERVERS 
+
+MCP SEVERS: Tools and Resource Provider, like (Slack, Google Drive, Github, PostGreSql)
+
+Can Make our Appication as MC CLIENT , If want to provide Resource to Other Developer that can MCP Server.
+
+
+Graded Module:
+Creating Prompt important points
+Objective: Instruct the model to transform plain text into HTML structure.
+Format: Ensure the output is valid, clean HTML with appropriate section headers, formatted paragraphs, and clickable links.
+Details: Preserve the citation style and request that the model responds only with HTML, without additional commentary.
+
+
+
+Module 4(Practical tips for Building Agentic AI):
+
+1) Creating a System quickly then, create a evals, for each example
+	example invoice Processing 
+		invoice1 -> fine
+		invoice2 -> dates extraction is not correct
+		
+2) Now Improving the System on the Basis of these evals, lets say date extraction is not correct or having wrong value , 
+	on the basis of correct Dates extraction We can Evaluate the System
+	
+3) Error Analysis and Priotizing next steps
+	one of the biggest predictor how efficinet and good is team is whether they are able derive deciplined Error Analysis Process to tell where to focus your Efforts.
+	
+  Looking Output of each component and they what normal human would do id the task is assign to them.
+  Traces : output form all the compnonents of single run is trace and form multiple run is traces
+  span: output from single component, have to find the cases where system is doing poorly, we called error then look the traces of those agents
+  Creating a Spread sheet and writing a detail where our systems failing
+  for research agent Example 
+  [propmt] -> [search terms] -> [web search resutls] -> [relevant document fetching] -> [wting a research paper resutl]
+	for all the error finding where we are getting most of error first trying to focus on that components.
+	
+Example for Error Analysis
+Invoice Processing
+
+document -> PDF to text -> [LLM] (tootls to update database)-> [update database] -> Record Created!
+sheet would be like
+input    | pdf-to-text         | LLM data extraction
+invoice1 | error in extraction | 
+invoice2 | 		       | wrong data selected
+.		.			.
+.		.			.
+
+		15%			87%
+		
+first have to focus on LLM data Extraction
+
+
+Example: Responding to customer email
+steps
+Extract key information
+Find relevant customer records
+Draft response for human review
+
+customer email-> [LLM(Tools: orders database query) ] verify order details -> [order databse query] -> [LLM](tools review request) Draft Response request review -> [request review]
+input |LLM drafter query| Orders database query(result of db query)| LLM-drafted email
+
+Componet level Evals [Don't have to Create full Run]
+create Ground truth values what sould be the resut for each component and trying to find F1 Score
+In last create end to end eval.
+
+Ungraded lab1: Created component level evaluation ,for research want to know search result are From Preffered Domain or not (ground truth)
+
+
+4)How to Address Problems you identify.
+ 
+ Improving non-LLM component performance
+ 1) Tune the hyperparameters of component 
+ 	Web search: Number of Results, Date range
+ 	RAG: Change similarity threshold, chunk size
+ 	ML Model: Detection Thresholde
+
+2) Replace the component Using other ML model or other search engine or Rag Provider.
+
+Imporving LLM base component Performance
+
+- Improve Your Prompts:  Add more explicit instructions, Add one or more concrete example to the prompt (few-shot prompting)
+- Try a new Model: Try multiple LLMs and use evals to pick the best
+- Split up the step: Decompose the task into smaller steps
+- Fine-tuen a model: Fine tune on your internal data to improve performance
+
+Order is important , if something doesn't work good in first step try second then third then in last 4th
+
+Building Instution to choosing right LLM.
+	Smaller Models: good at facts and general information
+	Larger model: better on Following Instructions
+
+Play with models often to find the strength of Models
+- Having a Personal set of evals might be helpful.
+- Read other people's prompts for ideas of how to best use models
+
+Use different models in you Agentic workflows
+- which models work for which types of tasks
+- aisuite makes it easy to quily swap out models
+
+
+5) Latency, cost optimization
+First getting high quality outputs then improve Latency and cost optimize it.
+
+first average time taken by each component and know which component have highest room for improvement
+Question to ask?
+Consider Parallelism?
+LLM Steps too long?
+- Try smaller/less intelligent model, or faster LLM Provider.
+
+
+Costing your workflow
+LLM steps (pay per token)
+Any API-calling tools (pay per API call)
+computes steps based on server capacity/cost
+
+each steps cost or component cost
+LLM cost , or web search api cost etc
+
+6) Development Process Summary
+	Building  (end to end system)  ,  improve individual component
+	Analyzing (Examine outputs, traces), Build evals, computes metrics, Error Analyis, Component-level evals [need more time] (important)
+
+
+	
+
+Module5: Patterns for higly autonomous agents (Don't need to hardcode sequence of steps)
+
+1) Planing Workflows: Create Plan by itself and execute it autonomously.
+
+Planning Customer service Agent [Sunglasses Store]
+
+Tools = [get_item_descriptions, check_inventory, process_item_return, get_item_price, check_past_transactions, process_item_sale]
+
+Prompt: Do yo have any round sunglasses in stock that are under $100. -> [LLM]
+
+system prompt for plaining
+"""You have access to the following tools:
+{descriptions of tools}
+Return a step by step plan to carry out the User's request."""
+
+Example Plan by LLM 
+step1. Use get_item_descriptions tool to find round sunglasses
+step2. Use check_inventory to see if results are in stock
+step3. Use get_item_price to see if in stock results are < $100
+
+Now 
+step1-> [llm] -> [get_item_descriptions] -> [step1 output, step2 text] -> [llm]-> [check_inventory]->[ step2 output, step3 text] -> [LLM] -> [get_item_price] -> [query, output1, output2, step3 output] -> [LLM] -> Response.
+
+2) Creating and executing plans:
+Formatting plan as json
+
+Prompt : "You have access to the following tools:
+		{description of tools}
+	Create a step by step plan in json format
+	Each step should have the following items:
+	Step number, description, tool name, and args"
+	
+getting tool and args easier to call functions
+
+3) Planning with code execution
+
+Instead of Asking LLM to output a plan in JSON format to execute one step at a time, why not have the LLM just try to write code 
+and code can capture multiple steps of the plan , like call this function the call this function and by executing code generated by the LLM
+we can actually carry out fairly complex plans.
+
+Some use cases we don't have to create function/tool for each use case in that type use cases we told the llm
+write the code and execute to get the desired result so we don't create tool for every use case.
+
+tools like calling api and other tools where llm cannot code it to get the data itself we have to provide that tools, 
+telling llm to write the code itself can be used to solve more complex problems autonomously.
+
+Prompt example:
+
+System prompt: "Write code to solve the users query Return your answer as python code delimited with <execute_python> and </execute_python> tags.
+
+Planning with code works better then json as Action According to data
+
+## Software agent to write software first LLM build a plan  to create component step by step then write the code.
+
+Little bit harder to control not much mature techonology right now.
+
+Ugraded Lab: Code as Plan
+
+
+Multi-agentic workflows:
+Decompose Complex problems and create subtasks and for each subtask assign agent , like working in team.
+
+like Marketing team
+
+Researcher: Tasks [Analyze market trends, Research Competitors] | Tools[Websearch] (Agent1)
+Graphic Designer: Tasks [Create data visualizations, Create artwork]  | Tools[Image generation and manipulation, Code execution for chart generation] (Agent2)
+Writer: Tasks [Transform research into report text and marketing copy] | Tools[None] (Agent3)
+
+these agents can be in other task
+
+##
+Now Writting LLM prompt and provide these agents , asking llm using these agents perform task
+with description of Agents, What each agent can do.
+We can call that marketing Manager.
+
+How does these agents Communicate with each other (Communication Patterns)
+
+Linear pattern : researcher -> graphic designer -> writer
+hirarichael pattern :   Manager -> Researcher
+				<-
+			Manager-> graphic designer
+				<-
+			Manager -> writer
+				<- 
+
+Deep hierachy pattern :  where other agents work as also for other manager
+
+All to all pattern Communicate pattern Each other 
+
+Graded Lab : Have Created Higly autonomous Agent
+
+1) Planner which asign task to each agent.
+2) Agents of work : [Researcher, writer first and initial draft, Editor final draft ].
+3) Agent that get plans from planner and assign task to each agent.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
